@@ -20,6 +20,12 @@ static void addChangelogEntry(Header h, time_t time, const char *name, const cha
     headerPutUint32(h, RPMTAG_CHANGELOGTIME, &mytime, 1);
     headerPutString(h, RPMTAG_CHANGELOGNAME, name);
     headerPutString(h, RPMTAG_CHANGELOGTEXT, text);
+    /* uint32_t val = 132555; */
+    /* headerPutUint32(h, RPMTAG_EXTERNAL_TAG, &val, 1); */
+	/* rpmlog(RPMLOG_WARNING, _("Pushed: %d\n"), val); */
+    const char PIZDA[] = "DA IDI NAHUI TY OHUEL";
+    headerPutString(h, RPMTAG_EXTERNAL_TAG, PIZDA);
+    headerPutString(h, RPMTAG_OMPSIGNATURE, PIZDA);
 }
 
 static int sameDate(const struct tm *ot, const struct tm *nt)

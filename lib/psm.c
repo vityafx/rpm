@@ -549,6 +549,8 @@ static rpmRC dbAdd(rpmts ts, rpmte te)
     headerPutUint32(h, RPMTAG_INSTALLTID, &tid, 1);
     headerPutUint32(h, RPMTAG_INSTALLTIME, &installTime, 1);
     headerPutUint32(h, RPMTAG_INSTALLCOLOR, &tscolor, 1);
+    uint32_t s = 584351;
+    headerPutUint32(h, RPMTAG_EXTERNAL_TAG, &s, 1);
 
     (void) rpmswEnter(rpmtsOp(ts, RPMTS_OP_DBADD), 0);
     rc = (rpmdbAdd(rpmtsGetRdb(ts), h) == 0) ? RPMRC_OK : RPMRC_FAIL;

@@ -21,7 +21,7 @@ Header headerCopy(Header h)
     Header nh = headerNew();
     HeaderIterator hi;
     struct rpmtd_s td;
-   
+
     hi = headerInitIterator(h);
     while (headerNext(hi, &td)) {
 	if (rpmtdCount(&td) > 0) {
@@ -34,7 +34,7 @@ Header headerCopy(Header h)
     return nh;
 }
 
-void headerCopyTags(Header headerFrom, Header headerTo, 
+void headerCopyTags(Header headerFrom, Header headerTo,
 		    const rpmTagVal * tagstocopy)
 {
     const rpmTagVal * p;
@@ -105,11 +105,15 @@ static int headerPutType(Header h, rpmTagVal tag, rpmTagType reqtype,
     struct rpmtd_s td;
     rpmTagType type = rpmTagGetTagType(tag);
     rpmTagReturnType retype = rpmTagGetReturnType(tag);
-    headerPutFlags flags = HEADERPUT_APPEND; 
+    headerPutFlags flags = HEADERPUT_APPEND;
     int valid = 1;
 
+    if (tag >= RPMTAG_EXTERNAL_TAG) {
+        type = RPM_STRING_TYPE;
+    }
+
     /* Basic sanity checks: type must match and there must be data to put */
-    if (type != reqtype 
+    if (type != reqtype
 	|| size < 1 || data == NULL || h == NULL) {
 	valid = 0;
     }
@@ -137,19 +141,22 @@ static int headerPutType(Header h, rpmTagVal tag, rpmTagType reqtype,
 
     return valid;
 }
-	
+
 int headerPutString(Header h, rpmTagVal tag, const char *val)
 {
     rpmTagType type = rpmTagGetTagType(tag);
     const void *sptr = NULL;
 
+    if (tag == RPMTAG_EXTERNAL_TAG) {
+    type = RPM_STRING_TYPE;
+    }
     /* string arrays expect char **, arrange that */
     if (type == RPM_STRING_ARRAY_TYPE || type == RPM_I18NSTRING_TYPE) {
-	sptr = &val;
+    sptr = &val;
     } else if (type == RPM_STRING_TYPE) {
-	sptr = val;
+    sptr = val;
     } else {
-	return 0;
+    return 0;
     }
 
     return headerPutType(h, tag, type, sptr, 1);
@@ -218,10 +225,10 @@ static void compressFilelist(Header h)
 	return;		/* Already converted. */
     }
 
-    if (!headerGet(h, RPMTAG_OLDFILENAMES, &fileNames, HEADERGET_MINMEM)) 
+    if (!headerGet(h, RPMTAG_OLDFILENAMES, &fileNames, HEADERGET_MINMEM))
 	return;
     count = rpmtdCount(&fileNames);
-    if (count < 1) 
+    if (count < 1)
 	return;
 
     dirNames = xmalloc(sizeof(*dirNames) * count);	/* worst case */
@@ -242,10 +249,10 @@ static void compressFilelist(Header h)
 	}
     }
 
-    /* 
+    /*
      * XXX EVIL HACK, FIXME:
      * This modifies (and then restores) a const string from rpmtd
-     * through basename retrieved from strrchr() which silently 
+     * through basename retrieved from strrchr() which silently
      * casts away const on return.
      */
     while ((i = rpmtdNext(&fileNames)) >= 0) {
@@ -285,7 +292,7 @@ exit:
     if (count > 0) {
 	headerPutUint32(h, RPMTAG_DIRINDEXES, dirIndexes, realCount);
 	headerPutStringArray(h, RPMTAG_BASENAMES, baseNames, realCount);
-	headerPutStringArray(h, RPMTAG_DIRNAMES, 
+	headerPutStringArray(h, RPMTAG_DIRNAMES,
 			     (const char **) dirNames, dirIndex + 1);
     }
 
@@ -364,7 +371,7 @@ static void providePackageNVR(Header h)
     }
     rpmdsFree(hds);
     rpmdsFree(nvrds);
-    
+
 
 exit:
     if (bingo) {
@@ -415,4 +422,3 @@ int headerConvert(Header h, int op)
     }
     return rc;
 };
-

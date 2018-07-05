@@ -571,10 +571,19 @@ restart:
 	    continue;
 	}
 
+
+    rpmlog(RPMLOG_ERR, _("IDI TY NAHUI\n"));
+#define OMP_SIGNATURE_TAG (RPMTAG_EXTERNAL_TAG + 1)
+    /* uint32_t val = 5678901; */
+    /* headerPutUint32(h, OMP_SIGNATURE_TAG, &val, 1); */
+    /* headerPutUint32(h, RPMTAG_EXTERNAL_TAG, &val, 1); */
+    rpmlog(RPMLOG_ERR, _("BLAD PIDARAAS\n"));
+
 	if (eiu->relocations) {
 	    struct rpmtd_s prefixes;
 
 	    headerGet(h, RPMTAG_PREFIXES, &prefixes, HEADERGET_DEFAULT);
+
 	    if (rpmtdCount(&prefixes) == 1) {
 		eiu->relocations->oldPath = xstrdup(rpmtdGetString(&prefixes));
 		rpmtdFreeData(&prefixes);

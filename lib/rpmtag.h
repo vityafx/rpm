@@ -373,7 +373,8 @@ typedef enum rpmTag_e {
     RPMTAG_AUTOINSTALLED	= 5094, /* i reservation (unimplemented) */
     RPMTAG_IDENTITY		= 5095, /* s reservation (unimplemented) */
 
-    RPMTAG_FIRSTFREE_TAG	/*!< internal */
+    RPMTAG_FIRSTFREE_TAG,	/*!< internal */
+    RPMTAG_OMPSIGNATURE = 6000	/* s */
 } rpmTag;
 
 #define	RPMTAG_EXTERNAL_TAG		1000000
